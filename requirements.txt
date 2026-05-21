@@ -2,3 +2,4 @@ streamlit
 PyMuPDF
 pillow
 streamlit-sortables
+streamlit-pdf-viewer
