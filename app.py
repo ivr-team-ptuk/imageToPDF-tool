@@ -169,11 +169,38 @@ if uploaded_images:
 
                 if uploaded_image.name == selected_name:
 
-                    image_bytes = uploaded_image.getvalue()
+                    # =========================
+                    # LOAD IMAGE
+                    # =========================
+
+                    original_bytes = uploaded_image.getvalue()
 
                     image = Image.open(
-                        io.BytesIO(image_bytes)
+                        io.BytesIO(original_bytes)
                     )
+
+                    # =========================
+                    # CONVERT RGBA → RGB
+                    # =========================
+
+                    if image.mode in ("RGBA", "P"):
+
+                        image = image.convert("RGB")
+
+                    # =========================
+                    # COMPRESS IMAGE
+                    # =========================
+
+                    compressed_buffer = io.BytesIO()
+
+                    image.save(
+                        compressed_buffer,
+                        format="JPEG",
+                        quality=92,
+                        optimize=True
+                    )
+
+                    compressed_bytes = compressed_buffer.getvalue()
 
                     width, height = image.size
 
