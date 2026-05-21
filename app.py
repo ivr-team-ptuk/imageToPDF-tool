@@ -1,7 +1,7 @@
 import streamlit as st
 import fitz
 import io
-
+from streamlit_pdf_viewer import pdf_viewer
 from PIL import Image
 from streamlit_sortables import sort_items
 
