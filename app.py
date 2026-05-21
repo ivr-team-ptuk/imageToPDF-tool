@@ -263,7 +263,7 @@ if uploaded_images:
 
                     page.insert_image(
                         rect,
-                        stream=image_bytes,
+                        stream=compressed_bytes,
                         keep_proportion=True
                     )
 
