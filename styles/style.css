@@ -229,3 +229,8 @@ REMOVE EXTRA STREAMLIT BOXES
 
     padding-top: 1.5rem;
 }
+
+div[data-testid="stDecoration"] {
+
+    display: none;
+}
