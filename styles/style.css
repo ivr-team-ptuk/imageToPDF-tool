@@ -220,6 +220,8 @@ NAVBAR
 
 .ivr-navbar {
 
+
+
     position: fixed;
     top: 50px;
     left: 0;
@@ -228,7 +230,8 @@ NAVBAR
     z-index: 9999;
 
     display: flex;
-    align-items: center;
+    align-items: center !important;
+    text-align: left !important;
     gap: 12px;
 
     padding: 14px 18px;
