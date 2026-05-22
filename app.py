@@ -167,7 +167,7 @@ with preview_col:
 
             preview_index = st.slider(
                 "التنقل بين الصور",
-                min_value=1,
+                min_value=0,
                 max_value=len(preview_names),
                 value=1
             )
