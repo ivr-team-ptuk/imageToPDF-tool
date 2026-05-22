@@ -398,3 +398,16 @@ with controls_col:
             )
 
             st.success("تم إنشاء ملف PDF بنجاح 🔥")
+
+# =========================
+# FOOTER
+# =========================
+
+st.markdown("""
+<div class="footer">
+
+    IVR Engineering Society © 2026
+
+</div>
+""", unsafe_allow_html=True)
+
