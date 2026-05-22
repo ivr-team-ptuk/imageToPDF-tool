@@ -203,3 +203,55 @@ p, span, label {
     color: var(--text-muted);
 }
 
+/* =========================
+NAVBAR
+========================= */
+
+.ivr-navbar {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    margin-bottom: 24px;
+
+    padding: 14px 18px;
+
+    border-radius: 18px;
+
+    background: rgba(255,255,255,0.05);
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    backdrop-filter: blur(12px);
+
+    box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+}
+
+.ivr-navbar a {
+
+    text-decoration: none;
+
+    color: white;
+
+    font-weight: 700;
+
+    padding: 10px 18px;
+
+    border-radius: 12px;
+
+    transition: 0.2s;
+
+    background: transparent;
+}
+
+.ivr-navbar a:hover {
+
+    background: rgba(255,255,255,0.08);
+
+    color: #FF5B04;
+
+    transform: translateY(-1px);
+}
