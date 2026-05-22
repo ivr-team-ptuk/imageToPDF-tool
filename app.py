@@ -25,12 +25,6 @@ with open("styles/style.css", encoding="utf-8") as f:
     )
     
     
-# =========================
-# HEADER
-# =========================
-
-st.title("تحويل الصور إلى PDF")
-st.caption("ارفع الصور ثم قم بترتيبها وتحويلها إلى PDF")
 
 # =========================
 # LAYOUT
@@ -45,6 +39,13 @@ st.markdown("""
     <a href="https://ivr-imagetopdf-tool.streamlit.app" target="_blank">Image to PDF</a>
 </div>
 """, unsafe_allow_html=True)
+
+# =========================
+# HEADER
+# =========================
+
+st.title("تحويل الصور إلى PDF")
+st.caption("ارفع الصور ثم قم بترتيبها وتحويلها إلى PDF")
 
 controls_col, preview_col = st.columns(
     [1, 1.2],
