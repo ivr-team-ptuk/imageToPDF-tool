@@ -145,6 +145,13 @@ with controls_col:
 
 with preview_col:
 
+        st.markdown(
+            '<div class="preview-pane">',
+            unsafe_allow_html=True
+        )
+
+
+
     st.subheader("المعاينة المباشرة")
 
     if uploaded_images:
