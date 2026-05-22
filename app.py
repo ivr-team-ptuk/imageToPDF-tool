@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 import fitz
 import io
 from PIL import Image
@@ -33,45 +34,99 @@ with open("styles/style.css", encoding="utf-8") as f:
 # =========================
 
 # ROW 1 - NAVBAR
-st.markdown("""
+
+components.html("""
 <div class="ivr-navbar">
-    <div class="nav-top">
 
-        <div class="nav-logo">
-            IVR Tools
-        </div>
+    <button onclick="toggleNav()">☰</button>
 
-        <button class="nav-toggle" onclick="toggleNavbar()">
-            ☰
-        </button>
-
+    <div id="nav-content">
+        <a href="https://ivr-home-page.streamlit.app" target="_self">Home</a>
+        <a href="https://ivr-merge-tool.streamlit.app" target="_self">Merge PDF</a>
+        <a href="https://ivr-watermark-tool.streamlit.app" target="_self">Watermark PDF</a>
+        <a href="https://ivr-imagetopdf-tool.streamlit.app" target="_self">Image to PDF</a>
     </div>
-            
-        <a href="https://ivr-home-page.streamlit.app" target="_blank">Home</a>
-        <a href="https://ivr-merge-tool.streamlit.app" target="_blank">Merge PDF</a>
-        <a href="https://ivr-watermark-tool.streamlit.app" target="_blank">Watermark PDF</a>
-        <a href="https://ivr-imagetopdf-tool.streamlit.app" target="_blank">Image to PDF</a>
-    </div>
-    
-    <script>
 
-        function toggleNavbar() {
+</div>
 
-            const nav = document.getElementById("ivrNavLinks");
+<style>
 
-            if (nav.style.display === "flex") {
+body{
+    margin:0;
+    background:transparent;
+}
 
-                nav.style.display = "none";
+.ivr-navbar{
 
-            } else {
+    display:flex;
+    align-items:center;
+    gap:12px;
 
-                nav.style.display = "flex";
-            }
-        }
+    padding:14px;
 
-    </script>
-    
-""", unsafe_allow_html=True)
+    border-radius:18px;
+
+    background:rgba(255,255,255,0.06);
+
+    backdrop-filter:blur(12px);
+
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+button{
+
+    background:#FF5B04;
+    color:white;
+
+    border:none;
+
+    padding:10px 14px;
+
+    border-radius:12px;
+
+    cursor:pointer;
+}
+
+#nav-content{
+
+    display:flex;
+    gap:10px;
+}
+
+a{
+
+    color:white;
+
+    text-decoration:none;
+
+    padding:10px 16px;
+
+    border-radius:12px;
+}
+
+a:hover{
+
+    background:rgba(255,255,255,0.08);
+}
+
+</style>
+
+<script>
+
+function toggleNav(){
+
+    let nav = document.getElementById("nav-content");
+
+    if(nav.style.display === "none"){
+        nav.style.display = "flex";
+    }
+    else{
+        nav.style.display = "none";
+    }
+}
+
+</script>
+""", height=90)
 
 # =========================
 # HEADER
