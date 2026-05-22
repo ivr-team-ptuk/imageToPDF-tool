@@ -12,7 +12,7 @@ from streamlit_sortables import sort_items
 
 st.set_page_config(
     page_title="تحويل الصور إلى PDF - IVR",
-    page_icon="Black_Square-01",
+    page_icon="Black_Square-01.svg",
     layout="wide"
 )
 
@@ -78,7 +78,7 @@ with controls_col:
             "bmp",
             "tiff",
             "gif"
-        ]
+        ],
         accept_multiple_files=True,
         help="يمكنك رفع عدة صور دفعة واحدة"
     )
