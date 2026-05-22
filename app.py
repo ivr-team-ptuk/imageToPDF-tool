@@ -10,7 +10,7 @@ from streamlit_sortables import sort_items
 # =========================
 
 st.set_page_config(
-    page_title="krkr" \
+    page_title="krkr"
     "تحويل الصور إلى PDF - IVR",
     layout="wide"
 )
