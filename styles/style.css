@@ -173,7 +173,9 @@ SLIDER
 ========================= */
 
 .stSlider {
-
+    direction: rtl;
+    text-align: right;
+    unicode-bidi: plaintext;
     padding-top: 10px;
 }
 
