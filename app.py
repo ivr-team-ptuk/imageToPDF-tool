@@ -35,11 +35,42 @@ with open("styles/style.css", encoding="utf-8") as f:
 # ROW 1 - NAVBAR
 st.markdown("""
 <div class="ivr-navbar">
-    <a href="https://ivr-home-page.streamlit.app" target="_blank">Home</a>
-    <a href="https://ivr-merge-tool.streamlit.app" target="_blank">Merge PDF</a>
-    <a href="https://ivr-watermark-tool.streamlit.app" target="_blank">Watermark PDF</a>
-    <a href="https://ivr-imagetopdf-tool.streamlit.app" target="_blank">Image to PDF</a>
-</div>
+    <div class="nav-top">
+
+        <div class="nav-logo">
+            IVR Tools
+        </div>
+
+        <button class="nav-toggle" onclick="toggleNavbar()">
+            ☰
+        </button>
+
+    </div>
+            
+        <a href="https://ivr-home-page.streamlit.app" target="_blank">Home</a>
+        <a href="https://ivr-merge-tool.streamlit.app" target="_blank">Merge PDF</a>
+        <a href="https://ivr-watermark-tool.streamlit.app" target="_blank">Watermark PDF</a>
+        <a href="https://ivr-imagetopdf-tool.streamlit.app" target="_blank">Image to PDF</a>
+    </div>
+    
+    <script>
+
+        function toggleNavbar() {
+
+            const nav = document.getElementById("ivrNavLinks");
+
+            if (nav.style.display === "flex") {
+
+                nav.style.display = "none";
+
+            } else {
+
+                nav.style.display = "flex";
+            }
+        }
+
+    </script>
+    
 """, unsafe_allow_html=True)
 
 # =========================
