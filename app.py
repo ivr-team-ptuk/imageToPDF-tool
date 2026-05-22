@@ -50,16 +50,6 @@ st.markdown("""
 </div>
 """, unsafe_allow_html=True)
 
-
-# ROW 2 - CONTENT (COLUMNS)
-left_col, right_col = st.columns([1, 2])
-
-with left_col:
-    st.write("Controls")
-
-with right_col:
-    st.write("Preview")
-
 # =========================
 # CONTROLS
 # =========================
