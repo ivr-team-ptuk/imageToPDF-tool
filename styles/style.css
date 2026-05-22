@@ -209,10 +209,12 @@ NAVBAR
 
 .ivr-navbar {
 
+    position: sticky;
+    top: 0;
+    z-index: 9999;
+
     display: flex;
-
     align-items: center;
-
     gap: 12px;
 
     margin-bottom: 24px;
