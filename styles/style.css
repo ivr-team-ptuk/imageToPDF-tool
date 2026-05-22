@@ -204,10 +204,10 @@ p, span, label {
 }
 
 /* =========================
-REMOVE EXTRA STREAMLIT BOXES
+REMOVE GHOST BOXES
 ========================= */
 
-[data-testid="stVerticalBlock"] {
+[data-testid="stElementContainer"] {
 
     background: transparent !important;
 
@@ -216,21 +216,35 @@ REMOVE EXTRA STREAMLIT BOXES
     box-shadow: none !important;
 }
 
-/* إزالة أي خلفيات إضافية */
+/* إزالة الحاويات الداخلية */
 
-[data-testid="column"] {
+div[data-testid="stMarkdownContainer"] {
 
     background: transparent !important;
+
+    border: none !important;
+
+    box-shadow: none !important;
 }
 
-/* إزالة padding مزعج */
+/* إزالة أي card افتراضية */
 
-.block-container {
+div[data-testid="stFileUploader"] section {
 
-    padding-top: 1.5rem;
+    background: transparent !important;
+
+    border: none !important;
+
+    box-shadow: none !important;
 }
 
-div[data-testid="stDecoration"] {
+/* إزالة خلفية preview */
 
-    display: none;
+[data-testid="stImage"] {
+
+    background: transparent !important;
+
+    border: none !important;
+
+    box-shadow: none !important;
 }
