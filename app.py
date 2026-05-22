@@ -27,19 +27,19 @@ with open("styles/style.css", encoding="utf-8") as f:
 st.markdown("""
 <div class="ivr-navbar">
 
-    <a href="https://ivr-home.streamlit.app" target="_blank">
+    <a class="nav-item" href="https://ivr-home.streamlit.app" target="_blank">
         الصفحة الرئيسية
     </a>
 
-    <a href="https://ivr-merge-tool.streamlit.app" target="_blank">
+    <a class="nav-item" href="https://ivr-merge-tool.streamlit.app" target="_blank">
         دمج PDF
     </a>
 
-    <a href="https://ivr-imagetopdf-tool.streamlit.app" target="_blank">
+    <a class="nav-item" href="https://ivr-imagetopdf-tool.streamlit.app" target="_blank">
         تحويل صور إلى PDF
     </a>
 
-    <a href="https://ivr-watermark-tool.streamlit.app" target="_blank">
+    <a class="nav-item" href="https://ivr-watermark-tool.streamlit.app" target="_blank">
         تعليم PDF
     </a>
 

@@ -255,3 +255,7 @@ NAVBAR
 
     transform: translateY(-1px);
 }
+
+.ivr-navbar a {
+    display: inline-block;
+}
