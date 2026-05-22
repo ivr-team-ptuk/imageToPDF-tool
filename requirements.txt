@@ -1,5 +1,6 @@
 streamlit
 PyMuPDF
 pillow
+pillow-heif
 streamlit-sortables
 streamlit-pdf-viewer

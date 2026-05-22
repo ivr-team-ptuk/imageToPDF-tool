@@ -1,8 +1,9 @@
 import streamlit as st
 import fitz
 import io
-
 from PIL import Image
+from pillow_heif import register_heif_opener
+register_heif_opener()
 from streamlit_sortables import sort_items
 
 # =========================
@@ -65,8 +66,15 @@ with controls_col:
     # =========================
 
     uploaded_images = st.file_uploader(
-        "رفع الصور",
-        type=["png", "jpg", "jpeg"],
+        "",
+        type=[
+            "png",
+            "jpg",
+            "jpeg",
+            "webp",
+            "heic",
+            "heif"
+        ],
         accept_multiple_files=True,
         help="يمكنك رفع عدة صور دفعة واحدة"
     )
