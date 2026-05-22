@@ -48,7 +48,7 @@ controls_col, preview_col = st.columns(
 with controls_col:
 
     st.markdown(
-        '<div class="ivr-card">',
+        # '<div class="ivr-card">',
         unsafe_allow_html=True
     )
 
