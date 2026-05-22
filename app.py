@@ -36,11 +36,6 @@ st.caption("ارفع الصور ثم قم بترتيبها وتحويلها إل
 # LAYOUT
 # =========================
 
-controls_col, preview_col = st.columns(
-    [1, 1.2],
-    gap="large"
-)
-
 # ROW 1 - NAVBAR
 st.markdown("""
 <div class="ivr-navbar">
@@ -49,6 +44,12 @@ st.markdown("""
     <a href="https://ivr-imagetopdf-tool.streamlit.app" target="_blank">Image to PDF</a>
 </div>
 """, unsafe_allow_html=True)
+
+controls_col, preview_col = st.columns(
+    [1, 1.2],
+    gap="large"
+)
+
 
 # =========================
 # CONTROLS
