@@ -231,7 +231,7 @@ NAVBAR
 
     display: flex;
     align-items: center !important;
-    text-align: left !important;
+    text-align: center !important;
     gap: 12px;
 
     padding: 14px 18px;
