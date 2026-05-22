@@ -23,11 +23,6 @@ with open("styles/style.css", encoding="utf-8") as f:
         f"<style>{f.read()}</style>",
         unsafe_allow_html=True
     )
-
-st.link_button("الصفحة الرئيسية", "https://ivr-home.streamlit.app")
-st.link_button("دمج PDF", "https://ivr-merge-tool.streamlit.app")
-st.link_button("تحويل صور إلى PDF", "https://ivr-imagetopdf-tool.streamlit.app")
-st.link_button("تعليم PDF", "https://ivr-watermark-tool.streamlit.app")
     
     
 # =========================
@@ -45,6 +40,17 @@ controls_col, preview_col = st.columns(
     [1, 1.2],
     gap="large"
 )
+
+navbar = st.rows(
+    [1],
+    gap="large"
+)
+
+with navbar:
+    st.link_button("الصفحة الرئيسية", "https://ivr-home.streamlit.app")
+    st.link_button("دمج PDF", "https://ivr-merge-tool.streamlit.app")
+    st.link_button("تحويل صور إلى PDF", "https://ivr-imagetopdf-tool.streamlit.app")
+    st.link_button("تعليم PDF", "https://ivr-watermark-tool.streamlit.app")
 
 # =========================
 # CONTROLS
