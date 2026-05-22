@@ -10,9 +10,7 @@ from streamlit_sortables import sort_items
 # =========================
 
 st.set_page_config(
-    page_title="""\n\n
-تحويل الصور إلى PDF - IVR
-""",
+    page_title="تحويل الصور إلى PDF - IVR",
     layout="wide"
 )
 
@@ -46,7 +44,7 @@ st.markdown("""
 # HEADER
 # =========================
 
-st.title("تحويل الصور إلى PDF")
+st.title("\n\nتحويل الصور إلى PDF")
 st.caption("ارفع الصور ثم قم بترتيبها وتحويلها إلى PDF")
 
 controls_col, preview_col = st.columns(
