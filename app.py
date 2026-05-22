@@ -19,22 +19,33 @@ st.set_page_config(
 # =========================
 
 with open("styles/style.css", encoding="utf-8") as f:
-
     st.markdown(
         f"<style>{f.read()}</style>",
         unsafe_allow_html=True
     )
 
-    st.markdown("""
-    <div class="ivr-navbar">
+st.markdown("""
+<div class="ivr-navbar">
 
-        <a href="https://YOUR-HOME-URL.streamlit.app">الرئيسية</a>
-        <a href="https://YOUR-WATERMARK-URL.streamlit.app">تعليم الملفات</a>
-        <a href="https://YOUR-MERGE-URL.streamlit.app">دمج الملفات</a>
-        <a href="https://YOUR-IMAGES-URL.streamlit.app">تحويل الصور</a>
+    <a href="https://ivr-home.streamlit.app" target="_blank">
+        الصفحة الرئيسية
+    </a>
 
-    </div>
-    """, unsafe_allow_html=True)
+    <a href="https://ivr-merge-tool.streamlit.app" target="_blank">
+        دمج PDF
+    </a>
+
+    <a href="https://ivr-imagetopdf-tool.streamlit.app" target="_blank">
+        تحويل صور إلى PDF
+    </a>
+
+    <a href="https://ivr-watermark-tool.streamlit.app" target="_blank">
+        تعليم PDF
+    </a>
+
+</div>
+""", unsafe_allow_html=True)
+    
     
 # =========================
 # HEADER
