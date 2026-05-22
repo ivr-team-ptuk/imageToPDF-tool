@@ -202,3 +202,30 @@ p, span, label {
 
     color: var(--text-muted);
 }
+
+/* =========================
+REMOVE EXTRA STREAMLIT BOXES
+========================= */
+
+[data-testid="stVerticalBlock"] {
+
+    background: transparent !important;
+
+    border: none !important;
+
+    box-shadow: none !important;
+}
+
+/* إزالة أي خلفيات إضافية */
+
+[data-testid="column"] {
+
+    background: transparent !important;
+}
+
+/* إزالة padding مزعج */
+
+.block-container {
+
+    padding-top: 1.5rem;
+}
