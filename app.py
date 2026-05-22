@@ -24,27 +24,10 @@ with open("styles/style.css", encoding="utf-8") as f:
         unsafe_allow_html=True
     )
 
-st.markdown("""
-<div class="ivr-navbar">
-
-    <a class="nav-item" href="https://ivr-home.streamlit.app" target="_blank">
-        الصفحة الرئيسية
-    </a>
-
-    <a class="nav-item" href="https://ivr-merge-tool.streamlit.app" target="_blank">
-        دمج PDF
-    </a>
-
-    <a class="nav-item" href="https://ivr-imagetopdf-tool.streamlit.app" target="_blank">
-        تحويل صور إلى PDF
-    </a>
-
-    <a class="nav-item" href="https://ivr-watermark-tool.streamlit.app" target="_blank">
-        تعليم PDF
-    </a>
-
-</div>
-""", unsafe_allow_html=True)
+st.link_button("الصفحة الرئيسية", "https://ivr-home.streamlit.app")
+st.link_button("دمج PDF", "https://ivr-merge-tool.streamlit.app")
+st.link_button("تحويل صور إلى PDF", "https://ivr-imagetopdf-tool.streamlit.app")
+st.link_button("تعليم PDF", "https://ivr-watermark-tool.streamlit.app")
     
     
 # =========================
