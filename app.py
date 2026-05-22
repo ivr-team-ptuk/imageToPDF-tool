@@ -41,16 +41,24 @@ controls_col, preview_col = st.columns(
     gap="large"
 )
 
-navbar = st.rows(
-    [1],
-    gap="large"
-)
+# ROW 1 - NAVBAR
+st.markdown("""
+<div class="ivr-navbar">
+    <a href="https://ivr-home.streamlit.app" target="_blank">Home</a>
+    <a href="https://ivr-merge-tool.streamlit.app" target="_blank">Merge PDF</a>
+    <a href="https://ivr-imagetopdf-tool.streamlit.app" target="_blank">Image to PDF</a>
+</div>
+""", unsafe_allow_html=True)
 
-with navbar:
-    st.link_button("الصفحة الرئيسية", "https://ivr-home.streamlit.app")
-    st.link_button("دمج PDF", "https://ivr-merge-tool.streamlit.app")
-    st.link_button("تحويل صور إلى PDF", "https://ivr-imagetopdf-tool.streamlit.app")
-    st.link_button("تعليم PDF", "https://ivr-watermark-tool.streamlit.app")
+
+# ROW 2 - CONTENT (COLUMNS)
+left_col, right_col = st.columns([1, 2])
+
+with left_col:
+    st.write("Controls")
+
+with right_col:
+    st.write("Preview")
 
 # =========================
 # CONTROLS
