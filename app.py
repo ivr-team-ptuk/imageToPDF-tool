@@ -25,6 +25,17 @@ with open("styles/style.css", encoding="utf-8") as f:
         unsafe_allow_html=True
     )
 
+    st.markdown("""
+    <div class="ivr-navbar">
+
+        <a href="https://YOUR-HOME-URL.streamlit.app">الرئيسية</a>
+        <a href="https://YOUR-WATERMARK-URL.streamlit.app">تعليم الملفات</a>
+        <a href="https://YOUR-MERGE-URL.streamlit.app">دمج الملفات</a>
+        <a href="https://YOUR-IMAGES-URL.streamlit.app">تحويل الصور</a>
+
+    </div>
+    """, unsafe_allow_html=True)
+    
 # =========================
 # HEADER
 # =========================
