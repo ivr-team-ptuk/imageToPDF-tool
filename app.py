@@ -44,7 +44,7 @@ st.markdown("""
 # HEADER
 # =========================
 
-st.title("\n\nتحويل الصور إلى PDF")
+st.title(".\n\nتحويل الصور إلى PDF")
 st.caption("ارفع الصور ثم قم بترتيبها وتحويلها إلى PDF")
 
 controls_col, preview_col = st.columns(
