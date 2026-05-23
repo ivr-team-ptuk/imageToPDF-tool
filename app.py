@@ -141,12 +141,16 @@ with preview_col:
 
             image_map = {img.name: img for img in uploaded_images}
 
-            preview_index = st.slider(
-                "التنقل بين الصور",
-                min_value=1,
-                max_value=len(sorted_names),
-                value=1
-            )
+            # ✅ إخفاء السلايدر إذا كانت صورة واحدة فقط
+            if len(sorted_names) > 1:
+                preview_index = st.slider(
+                    "التنقل بين الصور",
+                    min_value=1,
+                    max_value=len(sorted_names),
+                    value=1
+                )
+            else:
+                preview_index = 1
 
             selected = image_map.get(sorted_names[preview_index - 1])
 
