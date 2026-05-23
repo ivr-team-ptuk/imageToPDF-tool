@@ -113,10 +113,11 @@ with controls_col:
 
             st.subheader("أسماء العلامات المرجعية")
 
-            for name in sorted_names:
+            for i, name in enumerate(sorted_names):
                 bookmark_titles[name] = st.text_input(
                     f"علامة: {name}",
-                    value=name.rsplit(".", 1)[0]
+                    value=name.rsplit(".", 1)[0],
+                    key=f"bookmark_{i}"  # هذا السطر فقط هو الإضافة
                 )
 
         output_name = st.text_input(
