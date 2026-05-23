@@ -1,11 +1,11 @@
 import streamlit as st
-import streamlit.components.v1 as components
 import fitz
 import io
 from PIL import Image
 from pillow_heif import register_heif_opener
-register_heif_opener()
 from streamlit_sortables import sort_items
+
+register_heif_opener()
 
 # =========================
 # PAGE CONFIG
@@ -18,206 +18,89 @@ st.set_page_config(
 )
 
 # =========================
-# LOAD CSS
+# CONSTANTS
+# =========================
+
+LOGO_URL = (
+    "https://raw.githubusercontent.com/"
+    "ivr-team-ptuk/home-page/main/Black_Square-01.svg"
+)
+
+# =========================
+# CSS
 # =========================
 
 with open("styles/style.css", encoding="utf-8") as f:
-    st.markdown(
-        f"<style>{f.read()}</style>",
-        unsafe_allow_html=True
-    )
-    
-    
+    st.markdown(f"<style>{f.read()}</style>", unsafe_allow_html=True)
+
+# =========================
+# NAVBAR
+# =========================
+
+st.markdown(f"""
+<nav class="ivr-navbar">
+    <a href="https://ivr-home-page.streamlit.app" class="nav-logo">
+        <img src="{LOGO_URL}" class="nav-logo-img" alt="IVR">
+    </a>
+    <div class="nav-links">
+        <a href="https://ivr-watermark-tool.streamlit.app">تعليم الملفات</a>
+        <a href="https://ivr-merge-tool.streamlit.app">دمج الملفات</a>
+        <a href="https://ivr-imagetopdf-tool.streamlit.app">الصور إلى PDF</a>
+    </div>
+</nav>
+""", unsafe_allow_html=True)
+
+# =========================
+# PAGE HEADER
+# =========================
+
+st.markdown(f"""
+<div class="page-header">
+    <img src="{LOGO_URL}" class="hero-logo" alt="IVR Logo">
+    <h1>تحويل الصور إلى PDF</h1>
+    <p>ارفع الصور ثم قم بترتيبها وتحويلها إلى PDF</p>
+</div>
+""", unsafe_allow_html=True)
 
 # =========================
 # LAYOUT
 # =========================
 
-# ROW 1 - NAVBAR
-
-components.html("""
-<div class="ivr-navbar">
-
-    <button onclick="toggleNav()">☰</button>
-
-    <div id="nav-content">
-        <a href="https://ivr-home-page.streamlit.app" target="_self">Home</a>
-        <a href="https://ivr-merge-tool.streamlit.app" target="_self">Merge PDF</a>
-        <a href="https://ivr-watermark-tool.streamlit.app" target="_self">Watermark PDF</a>
-        <a href="https://ivr-imagetopdf-tool.streamlit.app" target="_self">Image to PDF</a>
-    </div>
-
-</div>
-
-<style>
-
-body{
-    margin:0;
-    background:transparent;
-}
-
-.ivr-navbar{
-
-    display:flex;
-    align-items:center;
-    gap:12px;
-
-    padding:14px;
-
-    border-radius:18px;
-
-    background:rgba(255,255,255,0.06);
-
-    backdrop-filter:blur(12px);
-
-    border:1px solid rgba(255,255,255,0.08);
-}
-
-button{
-
-    background:#FF5B04;
-    color:white;
-
-    border:none;
-
-    padding:10px 14px;
-
-    border-radius:12px;
-
-    cursor:pointer;
-}
-
-#nav-content{
-
-    display:flex;
-    gap:10px;
-}
-
-a{
-
-    color:white;
-
-    text-decoration:none;
-
-    padding:10px 16px;
-
-    border-radius:12px;
-}
-
-a:hover{
-
-    background:rgba(255,255,255,0.08);
-}
-
-</style>
-
-<script>
-
-function toggleNav(){
-
-    let nav = document.getElementById("nav-content");
-
-    if(nav.style.display === "none"){
-        nav.style.display = "flex";
-    }
-    else{
-        nav.style.display = "none";
-    }
-}
-
-</script>
-""", height=90)
+controls_col, preview_col = st.columns([1, 1.2], gap="large")
 
 # =========================
-# HEADER
-# =========================
-
-st.title("")
-st.title("تحويل الصور إلى PDF")
-st.caption("ارفع الصور ثم قم بترتيبها وتحويلها إلى PDF")
-
-controls_col, preview_col = st.columns(
-    [1, 1.2],
-    gap="large"
-)
-
-
-# =========================
-# CONTROLS
+# LEFT COLUMN — CONTROLS
 # =========================
 
 with controls_col:
 
-    # =========================
-    # UPLOAD IMAGES
-    # =========================
-
     uploaded_images = st.file_uploader(
-        "",
-        type=[
-            "png",
-            "jpg",
-            "jpeg",
-            "webp",
-            "heic",
-            "heif",
-            "bmp",
-            "tiff",
-            "gif"
-        ],
+        "اسحب الصور هنا أو اضغط للاختيار",
+        type=["png", "jpg", "jpeg", "webp", "heic", "heif", "bmp", "tiff", "gif"],
         accept_multiple_files=True,
         help="يمكنك رفع عدة صور دفعة واحدة"
     )
 
-    # =========================
-    # MAIN
-    # =========================
-
     if uploaded_images:
 
-        st.markdown("### ترتيب الصور")
-
-        image_names = [
-            image.name
-            for image in uploaded_images
-        ]
+        st.subheader("ترتيب الصور")
 
         sorted_names = sort_items(
-            image_names,
+            [img.name for img in uploaded_images],
             direction="vertical"
         )
 
         st.divider()
 
-        # =========================
-        # PAGE SIZE
-        # =========================
-
         page_size = st.selectbox(
             "حجم الصفحة",
-            [
-                "A4",
-                "Letter",
-                "Auto"
-            ]
+            ["A4", "Letter", "Auto"]
         )
-
-        # =========================
-        # ORIENTATION
-        # =========================
 
         orientation = st.selectbox(
             "اتجاه الصفحة",
-            [
-                "Portrait",
-                "Landscape",
-                "Auto"
-            ]
+            ["Portrait", "Landscape", "Auto"]
         )
-
-        # =========================
-        # BOOKMARKS
-        # =========================
 
         add_bookmarks = st.checkbox(
             "إضافة علامات مرجعية",
@@ -228,30 +111,24 @@ with controls_col:
 
         if add_bookmarks:
 
-            st.markdown("### أسماء العلامات المرجعية")
+            st.subheader("أسماء العلامات المرجعية")
 
-            for image_name in sorted_names:
-
-                clean_name = image_name.rsplit(".", 1)[0]
-
-                bookmark_titles[image_name] = st.text_input(
-                    f"علامة: {image_name}",
-                    value=clean_name
+            for name in sorted_names:
+                bookmark_titles[name] = st.text_input(
+                    f"علامة: {name}",
+                    value=name.rsplit(".", 1)[0]
                 )
-
-        # =========================
-        # OUTPUT NAME
-        # =========================
 
         output_name = st.text_input(
             "اسم الملف النهائي",
             value="images_pdf"
         )
 
-    st.markdown("</div>", unsafe_allow_html=True)
+    else:
+        st.info("قم برفع الصور أولاً.")
 
 # =========================
-# PREVIEW
+# RIGHT COLUMN — PREVIEW
 # =========================
 
 with preview_col:
@@ -262,235 +139,99 @@ with preview_col:
 
         try:
 
-            preview_names = sorted_names
+            image_map = {img.name: img for img in uploaded_images}
 
             preview_index = st.slider(
                 "التنقل بين الصور",
                 min_value=1,
-                max_value=len(preview_names),
+                max_value=len(sorted_names),
                 value=1
             )
 
-            preview_index = st.number_input(
-                "رقم الصورة",
-                min_value=1,
-                max_value=len(preview_names),
-                value=preview_index,
-                step=1
-            )
+            selected = image_map.get(sorted_names[preview_index - 1])
 
-            selected_name = preview_names[
-                preview_index - 1
-            ]
-
-            selected_image = None
-
-            for img in uploaded_images:
-
-                if img.name == selected_name:
-
-                    selected_image = img
-                    break
-
-            if selected_image:
-
-                image = Image.open(
-                    io.BytesIO(
-                        selected_image.getvalue()
-                    )
-                )
-
-                st.image(
-                    image,
-                    caption=selected_name,
-                    use_container_width=True
-                )
+            if selected:
+                image = Image.open(io.BytesIO(selected.getvalue()))
+                st.image(image, caption=selected.name, use_container_width=True)
 
         except Exception as e:
-
             st.error(f"خطأ في المعاينة: {e}")
 
     else:
-
         st.info("قم برفع الصور لرؤية المعاينة.")
 
-    st.markdown("</div>", unsafe_allow_html=True)
-
 # =========================
-# CREATE PDF
+# CREATE PDF — back in left column
 # =========================
 
 with controls_col:
 
-    st.markdown("<br>", unsafe_allow_html=True)
-
     if uploaded_images:
+
+        st.markdown("<br>", unsafe_allow_html=True)
 
         if st.button("إنشاء وتحميل"):
 
-            pdf_doc = fitz.open()
-
-            toc = []
-
+            image_map = {img.name: img for img in uploaded_images}
+            pdf_doc   = fitz.open()
+            toc          = []
             current_page = 1
+            progress     = st.progress(0)
 
-            progress = st.progress(0)
+            for i, name in enumerate(sorted_names):
 
-            total = len(sorted_names)
+                if name not in image_map:
+                    continue
 
-            for index, selected_name in enumerate(sorted_names):
+                image = Image.open(io.BytesIO(image_map[name].getvalue()))
 
-                for uploaded_image in uploaded_images:
+                if image.mode in ("RGBA", "P"):
+                    image = image.convert("RGB")
 
-                    if uploaded_image.name == selected_name:
+                buf = io.BytesIO()
+                image.save(buf, format="JPEG", quality=92, optimize=True)
+                compressed = buf.getvalue()
 
-                        # =========================
-                        # LOAD IMAGE
-                        # =========================
+                img_w, img_h = image.size
 
-                        original_bytes = uploaded_image.getvalue()
+                # Page dimensions
+                if page_size == "A4":
+                    page_w, page_h = 595, 842
+                elif page_size == "Letter":
+                    page_w, page_h = 612, 792
+                else:
+                    page_w, page_h = img_w, img_h
 
-                        image = Image.open(
-                            io.BytesIO(original_bytes)
-                        )
+                # Orientation
+                if orientation == "Landscape" and page_h > page_w:
+                    page_w, page_h = page_h, page_w
+                elif orientation == "Portrait" and page_w > page_h:
+                    page_w, page_h = page_h, page_w
 
-                        # =========================
-                        # CONVERT RGBA → RGB
-                        # =========================
-
-                        if image.mode in ("RGBA", "P"):
-
-                            image = image.convert("RGB")
-
-                        # =========================
-                        # COMPRESS IMAGE
-                        # =========================
-
-                        compressed_buffer = io.BytesIO()
-
-                        image.save(
-                            compressed_buffer,
-                            format="JPEG",
-                            quality=92,
-                            optimize=True
-                        )
-
-                        compressed_bytes = (
-                            compressed_buffer.getvalue()
-                        )
-
-                        width, height = image.size
-
-                        # =========================
-                        # PAGE SIZE
-                        # =========================
-
-                        if page_size == "A4":
-
-                            page_width = 595
-                            page_height = 842
-
-                        elif page_size == "Letter":
-
-                            page_width = 612
-                            page_height = 792
-
-                        else:
-
-                            page_width = width
-                            page_height = height
-
-                        # =========================
-                        # ORIENTATION
-                        # =========================
-
-                        if orientation == "Landscape":
-
-                            if page_height > page_width:
-
-                                page_width, page_height = (
-                                    page_height,
-                                    page_width
-                                )
-
-                        elif orientation == "Portrait":
-
-                            if page_width > page_height:
-
-                                page_width, page_height = (
-                                    page_height,
-                                    page_width
-                                )
-
-                        # =========================
-                        # CREATE PAGE
-                        # =========================
-
-                        page = pdf_doc.new_page(
-                            width=page_width,
-                            height=page_height
-                        )
-
-                        rect = fitz.Rect(
-                            0,
-                            0,
-                            page_width,
-                            page_height
-                        )
-
-                        page.insert_image(
-                            rect,
-                            stream=compressed_bytes,
-                            keep_proportion=True
-                        )
-
-                        # =========================
-                        # BOOKMARKS
-                        # =========================
-
-                        if add_bookmarks:
-
-                            toc.append([
-                                1,
-                                bookmark_titles[selected_name],
-                                current_page
-                            ])
-
-                        current_page += 1
-
-                        break
-
-                progress.progress(
-                    (index + 1) / total
+                page = pdf_doc.new_page(width=page_w, height=page_h)
+                page.insert_image(
+                    fitz.Rect(0, 0, page_w, page_h),
+                    stream=compressed,
+                    keep_proportion=True
                 )
 
-            # =========================
-            # APPLY TOC
-            # =========================
+                if add_bookmarks:
+                    toc.append([1, bookmark_titles.get(name, name), current_page])
+
+                current_page += 1
+                progress.progress((i + 1) / len(sorted_names))
 
             if add_bookmarks and toc:
-
                 pdf_doc.set_toc(toc)
 
-            # =========================
-            # SAVE PDF
-            # =========================
-
-            output_buffer = io.BytesIO()
-
-            pdf_doc.save(output_buffer)
-
-            output_buffer.seek(0)
-
+            output_buf = io.BytesIO()
+            pdf_doc.save(output_buf)
             pdf_doc.close()
-
-            # =========================
-            # DOWNLOAD
-            # =========================
+            output_buf.seek(0)
 
             st.download_button(
                 label="تحميل ملف PDF",
-                data=output_buffer,
+                data=output_buf,
                 file_name=f"{output_name}.pdf",
                 mime="application/pdf"
             )
@@ -501,11 +242,7 @@ with controls_col:
 # FOOTER
 # =========================
 
-st.markdown("""
-<div class="footer">
-
-    IVR Engineering Society © 2026
-
-</div>
-""", unsafe_allow_html=True)
-
+st.markdown(
+    '<div class="footer">IVR Engineering Society © 2026</div>',
+    unsafe_allow_html=True
+)
