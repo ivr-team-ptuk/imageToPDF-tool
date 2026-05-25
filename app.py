@@ -1,10 +1,9 @@
 import streamlit as st
 import fitz
 import io
+import zipfile
 from PIL import Image
 from pillow_heif import register_heif_opener
-from streamlit_sortables import sort_items
-
 register_heif_opener()
 
 # =========================
@@ -12,7 +11,7 @@ register_heif_opener()
 # =========================
 
 st.set_page_config(
-    page_title="تحويل الصور إلى PDF - IVR",
+    page_title="تحويل ملفات PDF - IVR",
     page_icon="Black_Square-01.svg",
     layout="wide"
 )
@@ -24,6 +23,12 @@ st.set_page_config(
 LOGO_URL = (
     "https://raw.githubusercontent.com/ivr-team-ptuk/home-page/refs/heads/main/Black_Square-01.svg"
 )
+
+IMAGE_ACCEPT = ["png", "jpg", "jpeg", "bmp", "tiff", "tif", "webp", "gif", "heic", "heif"]
+if HEIF_SUPPORTED:
+    IMAGE_ACCEPT += ["heic", "heif"]
+
+OUTPUT_FORMATS = ["PNG", "JPG", "JPEG", "BMP", "TIFF", "WEBP"]
 
 # =========================
 # CSS
@@ -56,191 +61,266 @@ st.markdown(f"""
 st.markdown(f"""
 <div class="page-header">
     <img src="{LOGO_URL}" class="hero-logo" alt="IVR Logo">
-    <h1>تحويل الصور إلى PDF</h1>
-    <p>ارفع الصور ثم قم بترتيبها وتحويلها إلى PDF</p>
+    <h1>تحويل ملفات PDF</h1>
+    <p>حوّل الصور إلى PDF أو حوّل صفحات PDF إلى صور بتنسيقات متعددة</p>
 </div>
 """, unsafe_allow_html=True)
+
+# =========================
+# DIRECTION TABS
+# =========================
+
+mode = st.radio(
+    "اختر اتجاه التحويل",
+    ["🖼️  صور  ←  PDF", "📄  PDF  ←  صور"],
+    horizontal=True
+)
+
+st.markdown("<br>", unsafe_allow_html=True)
 
 # =========================
 # LAYOUT
 # =========================
 
-controls_col, preview_col = st.columns([1, 1.2], gap="large")
+controls_col, preview_col = st.columns([1, 1.1])
 
-# =========================
-# LEFT COLUMN — CONTROLS
-# =========================
+# =========================================================
+# MODE A — Images → PDF
+# =========================================================
 
-with controls_col:
+if mode.startswith("🖼️"):
 
-    uploaded_images = st.file_uploader(
-        "اسحب الصور هنا أو اضغط للاختيار",
-        type=["png", "jpg", "jpeg", "webp", "heic", "heif", "bmp", "tiff", "gif"],
-        accept_multiple_files=True,
-        help="يمكنك رفع عدة صور دفعة واحدة"
-    )
+    with controls_col:
 
-    if uploaded_images:
-
-        st.subheader("ترتيب الصور")
-
-        sorted_names = sort_items(
-            [img.name for img in uploaded_images],
-            direction="vertical"
+        uploaded_images = st.file_uploader(
+            "اسحب الصور هنا أو اضغط للاختيار",
+            type=IMAGE_ACCEPT,
+            accept_multiple_files=True,
+            help="يمكنك رفع عدة صور دفعة واحدة"
         )
 
-        st.divider()
+        if uploaded_images:
 
-        page_size = st.selectbox(
-            "حجم الصفحة",
-            ["A4", "Letter", "Auto"]
-        )
+            st.caption(f"عدد الصور المرفوعة: **{len(uploaded_images)}**")
+            st.divider()
 
-        orientation = st.selectbox(
-            "اتجاه الصفحة",
-            ["Portrait", "Landscape", "Auto"]
-        )
-
-        add_bookmarks = st.checkbox(
-            "إضافة علامات مرجعية",
-            value=True
-        )
-
-        bookmark_titles = {}
-
-        if add_bookmarks:
-
-            st.subheader("أسماء العلامات المرجعية")
-
-            for i, name in enumerate(sorted_names):
-                bookmark_titles[name] = st.text_input(
-                    f"علامة: {name}",
-                    value=name.rsplit(".", 1)[0],
-                    key=f"bookmark_{i}"  # هذا السطر فقط هو الإضافة
-                )
-
-        output_name = st.text_input(
-            "اسم الملف النهائي",
-            value="images_pdf"
-        )
-
-    else:
-        st.info("قم برفع الصور أولاً.")
-
-# =========================
-# RIGHT COLUMN — PREVIEW
-# =========================
-
-with preview_col:
-
-    st.subheader("المعاينة المباشرة")
-
-    if uploaded_images:
-
-        try:
-
-            image_map = {img.name: img for img in uploaded_images}
-
-            # ✅ إخفاء السلايدر إذا كانت صورة واحدة فقط
-            if len(sorted_names) > 1:
-                preview_index = st.slider(
-                    "التنقل بين الصور",
-                    min_value=1,
-                    max_value=len(sorted_names),
-                    value=1
-                )
-            else:
-                preview_index = 1
-
-            selected = image_map.get(sorted_names[preview_index - 1])
-
-            if selected:
-                image = Image.open(io.BytesIO(selected.getvalue()))
-                st.image(image, caption=selected.name, use_container_width=True)
-
-        except Exception as e:
-            st.error(f"خطأ في المعاينة: {e}")
-
-    else:
-        st.info("قم برفع الصور لرؤية المعاينة.")
-
-# =========================
-# CREATE PDF — back in left column
-# =========================
-
-with controls_col:
-
-    if uploaded_images:
-
-        st.markdown("<br>", unsafe_allow_html=True)
-
-        if st.button("إنشاء وتحميل"):
-
-            image_map = {img.name: img for img in uploaded_images}
-            pdf_doc   = fitz.open()
-            toc          = []
-            current_page = 1
-            progress     = st.progress(0)
-
-            for i, name in enumerate(sorted_names):
-
-                if name not in image_map:
-                    continue
-
-                image = Image.open(io.BytesIO(image_map[name].getvalue()))
-
-                if image.mode in ("RGBA", "P"):
-                    image = image.convert("RGB")
-
-                buf = io.BytesIO()
-                image.save(buf, format="JPEG", quality=92, optimize=True)
-                compressed = buf.getvalue()
-
-                img_w, img_h = image.size
-
-                # Page dimensions
-                if page_size == "A4":
-                    page_w, page_h = 595, 842
-                elif page_size == "Letter":
-                    page_w, page_h = 612, 792
-                else:
-                    page_w, page_h = img_w, img_h
-
-                # Orientation
-                if orientation == "Landscape" and page_h > page_w:
-                    page_w, page_h = page_h, page_w
-                elif orientation == "Portrait" and page_w > page_h:
-                    page_w, page_h = page_h, page_w
-
-                page = pdf_doc.new_page(width=page_w, height=page_h)
-                page.insert_image(
-                    fitz.Rect(0, 0, page_w, page_h),
-                    stream=compressed,
-                    keep_proportion=True
-                )
-
-                if add_bookmarks:
-                    toc.append([1, bookmark_titles.get(name, name), current_page])
-
-                current_page += 1
-                progress.progress((i + 1) / len(sorted_names))
-
-            if add_bookmarks and toc:
-                pdf_doc.set_toc(toc)
-
-            output_buf = io.BytesIO()
-            pdf_doc.save(output_buf)
-            pdf_doc.close()
-            output_buf.seek(0)
-
-            st.download_button(
-                label="تحميل ملف PDF",
-                data=output_buf,
-                file_name=f"{output_name}.pdf",
-                mime="application/pdf"
+            page_size = st.selectbox(
+                "حجم الصفحة",
+                ["A4 (210×297 مم)", "A3 (297×420 مم)", "Letter (216×279 مم)", "مطابق لحجم الصورة"],
+                index=0
             )
 
-            st.success("تم إنشاء ملف PDF بنجاح 🔥")
+            fit_mode = st.selectbox(
+                "طريقة ملء الصفحة",
+                ["ملء الصفحة مع الحفاظ على النسبة", "تمديد لملء الصفحة كاملاً"],
+                index=0
+            )
+
+            output_name = st.text_input(
+                "اسم الملف النهائي",
+                value="converted_file"
+            )
+
+            if st.button("تحويل وتحميل"):
+
+                # page size presets in points (1 pt = 1/72 inch)
+                sizes = {
+                    "A4 (210×297 مم)":      fitz.paper_rect("a4"),
+                    "A3 (297×420 مم)":      fitz.paper_rect("a3"),
+                    "Letter (216×279 مم)":  fitz.paper_rect("letter"),
+                }
+
+                merged_doc = fitz.open()
+                progress   = st.progress(0)
+
+                for i, img_file in enumerate(uploaded_images):
+
+                    img = Image.open(img_file).convert("RGB")
+                    img_bytes = io.BytesIO()
+                    img.save(img_bytes, format="PNG")
+                    img_bytes.seek(0)
+
+                    if page_size.startswith("مطابق"):
+                        w_pt = img.width  * 0.75   # px → pt (96dpi)
+                        h_pt = img.height * 0.75
+                        rect = fitz.Rect(0, 0, w_pt, h_pt)
+                    else:
+                        rect = sizes[page_size]
+
+                    page = merged_doc.new_page(
+                        width=rect.width,
+                        height=rect.height
+                    )
+
+                    if fit_mode.startswith("ملء"):
+                        img_w = img.width
+                        img_h = img.height
+                        scale = min(rect.width / img_w, rect.height / img_h)
+                        new_w = img_w * scale
+                        new_h = img_h * scale
+                        x0 = (rect.width  - new_w) / 2
+                        y0 = (rect.height - new_h) / 2
+                        place = fitz.Rect(x0, y0, x0 + new_w, y0 + new_h)
+                    else:
+                        place = rect
+
+                    page.insert_image(place, stream=img_bytes.read())
+                    progress.progress((i + 1) / len(uploaded_images))
+
+                buf = io.BytesIO()
+                merged_doc.save(buf)
+                merged_doc.close()
+                buf.seek(0)
+
+                st.download_button(
+                    label="تحميل ملف PDF",
+                    data=buf,
+                    file_name=f"{output_name}.pdf",
+                    mime="application/pdf"
+                )
+
+                st.success("تم التحويل بنجاح 🔥")
+
+        else:
+            st.info("قم برفع صور أولاً.")
+
+    with preview_col:
+
+        st.subheader("معاينة الصور")
+
+        if uploaded_images:
+            try:
+                img = Image.open(uploaded_images[0])
+                st.image(img, use_container_width=True, caption=uploaded_images[0].name)
+            except Exception as e:
+                st.error(f"خطأ في المعاينة: {e}")
+        else:
+            st.info("قم برفع صور لرؤية المعاينة.")
+
+# =========================================================
+# MODE B — PDF → Images
+# =========================================================
+
+else:
+
+    with controls_col:
+
+        uploaded_pdf = st.file_uploader(
+            "اسحب ملف PDF هنا أو اضغط للاختيار",
+            type=["pdf"],
+            accept_multiple_files=False,
+            help="ملف PDF واحد فقط"
+        )
+
+        if uploaded_pdf:
+
+            _doc = fitz.open(stream=uploaded_pdf.getvalue(), filetype="pdf")
+            total_pages = len(_doc)
+            _doc.close()
+
+            st.caption(f"إجمالي الصفحات: **{total_pages}**")
+            st.divider()
+
+            out_fmt = st.selectbox(
+                "تنسيق الصور الناتجة",
+                OUTPUT_FORMATS,
+                index=0
+            )
+
+            dpi = st.slider(
+                "جودة الصورة (DPI)",
+                min_value=72,
+                max_value=300,
+                value=150,
+                step=1
+            )
+
+            c1, c2 = st.columns(2)
+            with c1:
+                from_p = st.number_input(
+                    "من صفحة", min_value=1, max_value=total_pages, value=1
+                )
+            with c2:
+                to_p = st.number_input(
+                    "إلى صفحة", min_value=1, max_value=total_pages, value=total_pages
+                )
+
+            if st.button("تحويل وتحميل"):
+
+                if int(from_p) > int(to_p):
+                    st.error("صفحة البداية يجب أن تكون أصغر أو تساوي صفحة النهاية.")
+                else:
+                    scale  = dpi / 72
+                    matrix = fitz.Matrix(scale, scale)
+
+                    zip_buf  = io.BytesIO()
+                    doc      = fitz.open(stream=uploaded_pdf.getvalue(), filetype="pdf")
+                    pages    = range(int(from_p) - 1, int(to_p))
+                    progress = st.progress(0)
+
+                    fmt_lower = out_fmt.lower()
+                    pil_fmt   = "JPEG" if fmt_lower in ("jpg", "jpeg") else fmt_lower.upper()
+
+                    with zipfile.ZipFile(zip_buf, "w", zipfile.ZIP_DEFLATED) as zf:
+                        for idx, p_idx in enumerate(pages):
+                            page = doc[p_idx]
+                            pix  = page.get_pixmap(matrix=matrix)
+                            img  = Image.frombytes("RGB", [pix.width, pix.height], pix.samples)
+                            ibuf = io.BytesIO()
+                            img.save(ibuf, format=pil_fmt)
+                            ibuf.seek(0)
+                            zf.writestr(f"page_{p_idx + 1}.{fmt_lower}", ibuf.read())
+                            progress.progress((idx + 1) / len(pages))
+
+                    doc.close()
+                    zip_buf.seek(0)
+
+                    st.download_button(
+                        label="تحميل الصور (ZIP)",
+                        data=zip_buf,
+                        file_name="pdf_pages.zip",
+                        mime="application/zip"
+                    )
+
+                    st.success("تم التحويل بنجاح 🔥")
+
+        else:
+            st.info("قم برفع ملف PDF أولاً.")
+
+    with preview_col:
+
+        st.subheader("المعاينة")
+
+        if uploaded_pdf:
+
+            try:
+                preview_doc = fitz.open(
+                    stream=uploaded_pdf.getvalue(),
+                    filetype="pdf"
+                )
+                total_pages = len(preview_doc)
+
+                if total_pages > 1:
+                    page_num = st.slider(
+                        "الصفحة",
+                        min_value=1,
+                        max_value=total_pages,
+                        value=1
+                    )
+                else:
+                    page_num = 1
+                    st.caption("الملف يحتوي على صفحة واحدة فقط")
+
+                page = preview_doc[page_num - 1]
+                pix  = page.get_pixmap(matrix=fitz.Matrix(1.5, 1.5))
+                st.image(pix.tobytes("png"), use_container_width=True)
+                preview_doc.close()
+
+            except Exception as e:
+                st.error(f"خطأ في المعاينة: {e}")
+
+        else:
+            st.info("قم برفع ملف لرؤية المعاينة.")
 
 # =========================
 # FOOTER
