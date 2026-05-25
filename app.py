@@ -8,6 +8,96 @@ from streamlit_sortables import sort_items
 register_heif_opener()
 
 # =========================
+# DOCUMENT ENHANCEMENT
+# =========================
+
+def enhance_document_image(pil_image, strength=50):
+
+    """
+    تحسين الصور الملتقطة للمستندات والطباعة
+
+    strength:
+    من 0 إلى 100
+    """
+
+    # تحويل إلى RGB
+    if pil_image.mode != "RGB":
+        pil_image = pil_image.convert("RGB")
+
+    img = np.array(pil_image)
+
+    # RGB -> BGR
+    img = cv2.cvtColor(img, cv2.COLOR_RGB2BGR)
+
+    # =========================
+    # Grayscale
+    # =========================
+
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+    # =========================
+    # Denoising
+    # =========================
+
+    denoise_strength = 5 + int(strength / 12)
+
+    denoised = cv2.fastNlMeansDenoising(
+        gray,
+        None,
+        denoise_strength,
+        7,
+        21
+    )
+
+    # =========================
+    # CLAHE Contrast
+    # =========================
+
+    clip = 1.5 + (strength / 40)
+
+    clahe = cv2.createCLAHE(
+        clipLimit=clip,
+        tileGridSize=(8, 8)
+    )
+
+    contrast = clahe.apply(denoised)
+
+    # =========================
+    # Adaptive Threshold
+    # =========================
+
+    adaptive_c = 8 + int(strength / 8)
+
+    scanned = cv2.adaptiveThreshold(
+        contrast,
+        255,
+        cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+        cv2.THRESH_BINARY,
+        21,
+        adaptive_c
+    )
+
+    # =========================
+    # Sharpen
+    # =========================
+
+    kernel = np.array([
+        [0, -1, 0],
+        [-1, 5,-1],
+        [0, -1, 0]
+    ])
+
+    sharpened = cv2.filter2D(scanned, -1, kernel)
+
+    # =========================
+    # Convert back to PIL
+    # =========================
+
+    final_image = Image.fromarray(sharpened)
+
+    return final_image
+
+# =========================
 # PAGE CONFIG
 # =========================
 
@@ -101,6 +191,24 @@ with controls_col:
             ["Portrait", "Landscape", "Auto"]
         )
 
+        st.divider()
+
+        st.subheader("تحسين الصور للطباعة")
+
+        enable_enhancement = st.checkbox(
+            "تفعيل تحسين المستندات",
+            value=True,
+            help="يجعل خلفية الورق بيضاء ويزيد وضوح النص"
+        )
+
+        enhancement_strength = st.slider(
+            "قوة التحسين",
+            min_value=0,
+            max_value=100,
+            value=55,
+            disabled=not enable_enhancement
+        )
+
         add_bookmarks = st.checkbox(
             "إضافة علامات مرجعية",
             value=True
@@ -156,7 +264,19 @@ with preview_col:
 
             if selected:
                 image = Image.open(io.BytesIO(selected.getvalue()))
-                st.image(image, caption=selected.name, use_container_width=True)
+
+                preview_image = image
+                if enable_enhancement:
+                    preview_image = enhance_document_image(
+                        image,
+                        enhancement_strength
+                    )
+
+                st.image(
+                    preview_image,
+                    caption=selected.name,
+                    use_container_width=True
+                )
 
         except Exception as e:
             st.error(f"خطأ في المعاينة: {e}")
@@ -192,6 +312,12 @@ with controls_col:
                 if image.mode in ("RGBA", "P"):
                     image = image.convert("RGB")
 
+                if enable_enhancement:
+                    image = enhance_document_image(
+                        image,
+                        enhancement_strength
+                    )
+                    
                 buf = io.BytesIO()
                 image.save(buf, format="JPEG", quality=92, optimize=True)
                 compressed = buf.getvalue()

@@ -4,3 +4,5 @@ pillow
 pillow-heif
 streamlit-sortables
 streamlit-pdf-viewer
+opencv-python-headless
+numpy
