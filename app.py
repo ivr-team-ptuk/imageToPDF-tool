@@ -6,6 +6,7 @@ from PIL import ImageEnhance
 from pillow_heif import register_heif_opener
 from streamlit_sortables import sort_items
 import numpy as np
+import cv2
 
 register_heif_opener()
 
