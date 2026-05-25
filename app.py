@@ -25,8 +25,6 @@ LOGO_URL = (
 )
 
 IMAGE_ACCEPT = ["png", "jpg", "jpeg", "bmp", "tiff", "tif", "webp", "gif", "heic", "heif"]
-if HEIF_SUPPORTED:
-    IMAGE_ACCEPT += ["heic", "heif"]
 
 OUTPUT_FORMATS = ["PNG", "JPG", "JPEG", "BMP", "TIFF", "WEBP"]
 
