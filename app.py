@@ -11,7 +11,7 @@ register_heif_opener()
 # =========================
 
 st.set_page_config(
-    page_title="تحويل ملفات PDF - IVR",
+    page_title="تحويل صور PDF - IVR",
     page_icon="Black_Square-01.svg",
     layout="wide"
 )
@@ -59,7 +59,7 @@ st.markdown(f"""
 st.markdown(f"""
 <div class="page-header">
     <img src="{LOGO_URL}" class="hero-logo" alt="IVR Logo">
-    <h1>تحويل ملفات PDF</h1>
+    <h1>تحويل صور PDF</h1>
     <p>حوّل الصور إلى PDF أو حوّل صفحات PDF إلى صور بتنسيقات متعددة</p>
 </div>
 """, unsafe_allow_html=True)
