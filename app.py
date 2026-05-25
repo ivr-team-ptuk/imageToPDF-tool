@@ -2,8 +2,10 @@ import streamlit as st
 import fitz
 import io
 from PIL import Image
+from PIL import ImageEnhance
 from pillow_heif import register_heif_opener
 from streamlit_sortables import sort_items
+import numpy as np
 
 register_heif_opener()
 
@@ -317,7 +319,7 @@ with controls_col:
                         image,
                         enhancement_strength
                     )
-                    
+
                 buf = io.BytesIO()
                 image.save(buf, format="JPEG", quality=92, optimize=True)
                 compressed = buf.getvalue()
